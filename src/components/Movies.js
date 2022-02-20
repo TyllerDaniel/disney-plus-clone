@@ -1,23 +1,27 @@
 import React from 'react'
 import styled from 'styled-components'
+import { selectMovies } from '../features/movie/movieSlice'
+import { useSelector } from 'react-redux'
+import {Link} from 'react-router-dom'
 
 function Movies() {
+
+  const movies = useSelector(selectMovies);
+
   return (
     <Container>
         <h4>Recommended for You</h4>
         <Content>
-            <Wrap>
-                <img src="https://sm.ign.com/t/ign_za/review/c/coco-revie/coco-review_wrxt.1200.jpg" />
-            </Wrap>
-            <Wrap>
-                <img src="https://baylorlariat.com/wp-content/uploads/2021/09/AAAABXxdFOaIfS27hk6o9ct8ff4Uyvr-uuA861ZybXn_rxFweAeCEU_FbNd6LddTi5Sp4_4ytU8.jpg" />
-            </Wrap>
-            <Wrap>
-                <img src="https://northcoastcourier.co.za/wp-content/uploads/sites/73/2021/11/red-notice-review_86dj.jpg" />
-            </Wrap>
-            <Wrap>
-                <img src="https://miro.medium.com/max/1400/1*IcdX73amafu9QGM-43I4WQ.jpeg" />
-            </Wrap>
+            {movies &&
+                movies.map((movie) => (
+                  <Wrap key={movie.id}>
+                    <Link to={`/detail/${movie.id}`}>
+                        <img src={movie.cardImg} />
+                    </Link>
+                  </Wrap>  
+                ))
+            }
+
 
         </Content>
     </Container>

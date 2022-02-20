@@ -1,37 +1,59 @@
-import React from 'react'
+import React,{useEffect,useState} from 'react'
 import styled from 'styled-components'
+import { useParams } from 'react-router-dom'
+import db from '../firebase'
+import { doc, onSnapshot } from 'firebase/firestore'
 
 function Detail() {
+  
+    const {id} = useParams();
+    const[movie, setMovie] = useState();
+
+      useEffect(() => {
+        //grab movie info from database
+        const unsub = onSnapshot(doc(db, "movies", id), (doc) => {
+            //console.log("Current data: ", doc.data());
+            setMovie(doc.data())
+
+        });
+    }, [])
+
+
+
   return (
     <Container>
-        <Background>
-            <img src="https://cdn.vox-cdn.com/thumbor/wJ71E7nJ_4Wj0btm5seEnHNJ4Xk=/0x0:4096x2304/1200x800/filters:focal(1973x1175:2627x1829)/cdn.vox-cdn.com/uploads/chorus_image/image/60190709/BO_RGB_s120_22a_cs_pub.pub16.318.0.jpg" />
-        </Background>
-        <ImageTitle>
-            <img src='https://pbs.twimg.com/media/EJNgi7cXYAExhC1.png' />
-        </ImageTitle>
-        <Controls>
-            <Playbutton>
-                <img src="/images/play-icon-black.png" />
-                <span>PLAY</span>
-            </Playbutton>
-            <TrailerButton>
-                <img src="/images/play-icon-white.png" />
-                <span>TRAILER</span>
-            </TrailerButton>
-            <AddButton>
-                <span>+</span>
-            </AddButton>
-            <GroupwatchButton>
-                <img src="/images/group-icon.png" />
-            </GroupwatchButton>
-        </Controls>
-        <SubTitle>
-            2018. 7m.Family,Fantasy,Kids,Animation
-        </SubTitle>
-        <Description>
-            A Chinese mom who's sad when her grown son leabves home gets another chance at motherhood when one of her dumplings spring to life.But she finds that nothing stays cute and small forever.
-        </Description>
+        {movie && (
+         <>
+            <Background>
+                <img alt="" src={movie.backgroundImg}/>
+            </Background>
+            <ImageTitle>
+                <img alt="" src={movie.titleImg}/>
+            </ImageTitle>
+            <Controls>
+                <Playbutton>
+                    <img src="/images/play-icon-black.png" />
+                    <span>PLAY</span>
+                </Playbutton>
+                <TrailerButton>
+                    <img src="/images/play-icon-white.png" />
+                    <span>TRAILER</span>
+                </TrailerButton>
+                <AddButton>
+                    <span>+</span>
+                </AddButton>
+                <GroupwatchButton>
+                    <img src="/images/group-icon.png" />
+                </GroupwatchButton>
+            </Controls>
+            <SubTitle>
+                {movie.subTitle}
+            </SubTitle>
+            <Description>
+                {movie.description}
+            </Description>
+        </>
+        )}
     </Container>
   )
 }
@@ -63,6 +85,7 @@ const ImageTitle = styled.div`
     min-height: 170px;
     width: 20vw;
     min-width:200px;
+    margin-top: 60px;
 
     img{
         width:100%;
@@ -133,5 +156,6 @@ const Description = styled.div`
     line-height:1.4;
     font-size:20px;
     margin-top:16px;
+    max-width: 750px;
     
 `
